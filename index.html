@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="el">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>🧯 Κρουνοί Αχαΐας</title>
+
+
+    <!-- Leaflet -->
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+
+    <!-- CSS -->
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=20260817"
+    >
+    <!-- Εικονίδια για την αρχική οθόνη του κινητού -->
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================
+         HEADER
+         ===================================== -->
+
+    <header id="header">
+
+        <div class="title">
+           🧯 ΚΡΟΥΝΟΙ ΑΧΑΪΑΣ
+        </div>
+
+        <div class="subtitle">
+            Σύστημα εντοπισμού πυροσβεστικών κρουνών
+        </div>
+
+    </header>
+
+
+    <!-- =====================================
+         CONTROLS
+         ===================================== -->
+
+    <div id="controls">
+
+
+      
+
+
+        
+
+
+
+
+        <div id="counter">
+
+            Κρουνοί:
+            <strong id="hydrantCount">
+                0
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================
+         MAP
+         ===================================== -->
+
+    <div id="map"></div>
+
+
+    <!-- =====================================
+         ROUTE DIRECTIONS
+         ===================================== -->
+
+    
+
+
+    <!-- =====================================
+         NEAREST HYDRANT PANEL
+         ===================================== -->
+
+    <div id="nearestPanel">
+        
+
+
+        <div id="nearestTitle">
+
+            🚒 ΚΟΝΤΙΝΟΤΕΡΟΣ ΚΡΟΥΝΟΣ
+
+        </div>
+
+
+        <div id="nearestName">
+
+            Περιμένουμε GPS...
+
+        </div>
+
+
+        <div id="nearestInfo">
+
+            📍 Εντοπισμός θέσης...
+
+        </div>
+
+
+        <button
+            id="navigateButton"
+            disabled
+        >
+
+            🧭 ΔΕΙΞΕ ΔΙΑΔΡΟΜΗ
+
+        </button>
+
+
+        <button
+            id="voiceButton"
+        >
+
+            🔊 ΦΩΝΗΤΙΚΕΣ ΟΔΗΓΙΕΣ
+
+        </button>
+
+
+    </div>
+    <button id="toggleNearestBtn" class="toggle-panel-btn" title="Εμφάνιση/Απόκρυψη Κοντινότερου Κρουνού">
+        🧯
+    </button>
+     <button id="locationButton" title="Η τοποθεσία μου">
+        📍
+    </button>
+
+    <!-- =====================================
+         LEAFLET JS
+         ===================================== -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+
+    <!-- =====================================
+         APP JS
+         ===================================== -->
+
+    <script src="app.js?v=20260817"></script>
+
+
+
+</body>
+
+</html>
