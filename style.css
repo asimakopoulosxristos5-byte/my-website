@@ -35,15 +35,10 @@ body {
    ===================================== */
 
 #header {
-
-    height: 65px;
-
+    height: auto;
     background: #b71c1c;
-
     color: white;
-
-    padding: 8px 15px;
-
+    padding: 12px 15px;
 }
 
 
@@ -425,11 +420,8 @@ body {
 
 
     #header {
-
-        height: 55px;
-
-        padding: 6px 10px;
-
+        height: auto;
+        padding: 10px;
     }
 
 
@@ -495,6 +487,7 @@ body {
 
 
     #map {
+        width: 100%;
 
         height: calc(100vh - 170px);
 
@@ -597,5 +590,76 @@ body {
 .toggle-panel-btn:hover {
     background-color: #d32f2f;
     transform: scale(1.05);
+}
+/* =====================================
+   LOGIN MODAL STYLES
+   ===================================== */
+.login-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.login-box h2 {
+    color: #b71c1c;
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.login-box p {
+    font-size: 14px;
+    color: #455a64;
+    margin-bottom: 15px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 12px;
+    background: #b71c1c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-box button:hover {
+    background: #d32f2f;
+}
+
+.login-error {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
 }
 

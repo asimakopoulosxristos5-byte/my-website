@@ -4,6 +4,48 @@
 
 
 // ==========================================
+// 🔒 ΕΛΕΓΧΟΣ ΠΡΟΣΒΑΣΗΣ ΕΘΕΛΟΝΤΩΝ
+// ==========================================
+const SOMA_PASSWORD = 'XRISTOS'; // <--- ΕΔΩ ΑΛΛΑΖΕΙΣ ΤΟΝ ΚΩΔΙΚΟ ΤΟΥ ΣΩΜΑΤΕΙΟΥ
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('loginModal');
+    const input = document.getElementById('passwordInput');
+    const btn = document.getElementById('loginButton');
+    const errorMsg = document.getElementById('loginError');
+
+    // Έλεγχος αν έχει ήδη μπει σωστός κωδικός σε αυτή τη συσκευή
+    if (localStorage.getItem('vol_auth') === 'true') {
+        if (modal) modal.style.display = 'none';
+        return;
+    }
+
+    function checkPassword() {
+        if (input.value === SOMA_PASSWORD) {
+            localStorage.setItem('vol_auth', 'true');
+            if (modal) modal.style.display = 'none';
+            errorMsg.style.display = 'none';
+        } else {
+            errorMsg.style.display = 'block';
+            input.value = '';
+            input.focus();
+        }
+    }
+
+    if (btn) btn.addEventListener('click', checkPassword);
+    if (input) {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        // Εστίαση στο πεδίο κωδικού κατά το άνοιγμα
+        input.focus();
+    }
+});
+
+
+// ==========================================
 // ΧΑΡΤΗΣ
 // ==========================================
 
@@ -380,197 +422,76 @@ fetch('hydrants.json')
 // ==========================================
 // ΕΜΦΑΝΙΣΗ ΚΡΟΥΝΩΝ
 // ==========================================
-
 function displayHydrants() {
-
-
-   const searchText = '';
-
-
-   const selectedStatus = 'all';
-
+    const searchText = normalizeText(document.getElementById('searchInput')?.value || '');
+    const selectedStatus = document.getElementById('statusFilter')?.value || 'all';
+    const selectedCategory = document.getElementById('categoryFilter')?.value || 'all';
 
     let visibleCount = 0;
 
+    hydrants.forEach(hydrant => {
+        const matchesSearch =
+            normalizeText(hydrant.id || '').includes(searchText) ||
+            normalizeText(hydrant.area || '').includes(searchText) ||
+            normalizeText(hydrant.name || '').includes(searchText);
 
-    hydrants.forEach(
-        hydrant => {
+        const matchesStatus =
+            selectedStatus === 'all' || hydrant.status === selectedStatus;
 
+        // Έλεγχος κατηγορίας
+       const matchesCategory =
+    selectedCategory === 'all' ||
+    (selectedCategory === 'hydrant' && hydrant.type !== 'Δεξαμενή' && hydrant.type !== 'Νοσοκομείο' && hydrant.type !== 'Ερυθρός Σταυρός') ||
+    (selectedCategory === 'tank' && hydrant.type === 'Δεξαμενή') ||
+    (selectedCategory === 'medical' && (hydrant.type === 'Νοσοκομείο' || hydrant.type === 'Ερυθρός Σταυρός'));
 
-            const matchesSearch =
+        if (matchesSearch && matchesStatus && matchesCategory) {
+            if (!hydrant.marker) {
+                const markerIcon =
+                    hydrant.type === 'Δεξαμενή'
+                        ? createTankIcon()
+                        : (hydrant.type === 'Νοσοκομείο' || hydrant.type === 'Ερυθρός Σταυρός')
+                            ? createMedicalIcon(hydrant.type)
+                            : createHydrantIcon(hydrant.status);
 
-                normalizeText(
-                    hydrant.id
-                ).includes(
-                    searchText
-                )
+                hydrant.marker = L.marker([hydrant.lat, hydrant.lng], { icon: markerIcon }).addTo(map);
 
-                ||
+                const symbol =
+                    hydrant.type === 'Δεξαμενή' ? '🛢️' :
+                    hydrant.type === 'Νοσοκομείο' ? '🏥' :
+                    hydrant.type === 'Ερυθρός Σταυρός' ? '➕' : '🚒';
 
-                normalizeText(
-                    hydrant.area
-                ).includes(
-                    searchText
-                )
-
-                ||
-
-                normalizeText(
-                    hydrant.name
-                ).includes(
-                    searchText
-                );
-
-
-            const matchesStatus = true; 
-
-                selectedStatus === 'all'
-
-                ||
-
-                hydrant.status ===
-                selectedStatus;
-
-
-            if (
-                matchesSearch &&
-                matchesStatus
-            ) {
-
-
-                if (
-                    !hydrant.marker
-                ) {
-
-
-                    hydrant.marker =
-                        L.marker(
-
-                            [
-                                hydrant.lat,
-                                hydrant.lng
-                            ],
-
-                            {
-
-                                icon:
-                                    hydrant.type === 'Δεξαμενή'
-                                        ? createTankIcon()
-                                        : createHydrantIcon(
-                                            hydrant.status
-                                        )
-
-                            }
-
-                        ).addTo(map);
-
-
-                    hydrant.marker
-                        .bindPopup(`
-
-                            <h3>
-                                ${hydrant.type === 'Δεξαμενή' ? '🛢️' : '🚒'}
-                                ${hydrant.name}
-                            </h3>
-
-                            <p>
-                                <strong>
-                                    Κωδικός:
-                                </strong>
-
-                                ${hydrant.id}
-                            </p>
-
-                            <p>
-                                <strong>
-                                    Περιοχή:
-                                </strong>
-
-                                ${hydrant.area}
-                            </p>
-
-                            <p>
-                                <strong>
-                                    Κατάσταση:
-                                </strong>
-
-                                ${hydrant.status}
-                            </p>
-
-                            <button
-                                onclick="
-                                    showRouteToHydrant(
-                                        ${hydrant.lat},
-                                        ${hydrant.lng}
-                                    )
-                                "
-                                style="
-                                    width:100%;
-                                    padding:10px;
-                                    background:#1976d2;
-                                    color:white;
-                                    border:none;
-                                    border-radius:6px;
-                                    font-weight:bold;
-                                "
-                            >
-
-                                🧭 ΔΕΙΞΕ ΔΙΑΔΡΟΜΗ
-
-                            </button>
-
-                        `);
-
-                }
-
-
-                if (
-                    !map.hasLayer(
-                        hydrant.marker
-                    )
-                ) {
-
-                    hydrant.marker
-                        .addTo(map);
-
-                }
-
-
-                visibleCount++;
-
+                hydrant.marker.bindPopup(`
+                    <h3>${symbol} ${hydrant.name}</h3>
+                    <p><strong>Κωδικός:</strong> ${hydrant.id}</p>
+                    <p><strong>Περιοχή:</strong> ${hydrant.area}</p>
+                    <p><strong>Κατάσταση:</strong> ${hydrant.status}</p>
+                    <button
+                        onclick="showRouteToHydrant(${hydrant.lat}, ${hydrant.lng})"
+                        style="width:100%; padding:10px; background:#1976d2; color:white; border:none; border-radius:6px; font-weight:bold;"
+                    >
+                        🧭 ΔΕΙΞΕ ΔΙΑΔΡΟΜΗ
+                    </button>
+                `);
             }
 
-            else {
-
-
-                if (
-                    hydrant.marker &&
-                    map.hasLayer(
-                        hydrant.marker
-                    )
-                ) {
-
-                    map.removeLayer(
-                        hydrant.marker
-                    );
-
-                }
-
+            if (!map.hasLayer(hydrant.marker)) {
+                hydrant.marker.addTo(map);
             }
 
+            visibleCount++;
+        } else {
+            if (hydrant.marker && map.hasLayer(hydrant.marker)) {
+                map.removeLayer(hydrant.marker);
+            }
         }
-    );
+    });
 
-
-    document
-        .getElementById(
-            'hydrantCount'
-        )
-        .textContent =
-        visibleCount;
-
+    const countEl = document.getElementById('hydrantCount');
+    if (countEl) {
+        countEl.textContent = visibleCount;
+    }
 }
-
 
 // ==========================================
 // SEARCH
@@ -1576,5 +1497,46 @@ function createTankIcon() {
         iconAnchor: [17, 17],
         popupAnchor: [0, -17]
     });
+    
+    
+    
+
+
 
 }
+// ==========================================
+// 🏥 ΝΟΣΟΚΟΜΕΙΑ & ΕΡΥΘΡΟΣ ΣΤΑΥΡΟΣ (ΞΕΧΩΡΙΣΤΑ)
+// ==========================================
+fetch('medical.json')
+    .then(response => response.json())
+    .then(locations => {
+        locations.forEach(loc => {
+            const symbol = loc.type === 'Νοσοκομείο' ? '🏥' : '➕';
+            const bgColor = loc.type === 'Νοσοκομείο' ? '#ffffff' : '#d32f2f';
+
+            const icon = L.divIcon({
+                className: 'hydrant-icon',
+                html: `<div class="hydrant-marker" style="background-color:${bgColor}; border-color:#d32f2f;">${symbol}</div>`,
+                iconSize: [34, 34],
+                iconAnchor: [17, 17],
+                popupAnchor: [0, -17]
+            });
+
+            L.marker([loc.lat, loc.lng], { icon: icon })
+                .addTo(map)
+                .bindPopup(`
+                    <h3>${symbol} ${loc.name}</h3>
+                    <p><strong>Περιοχή:</strong> ${loc.area}</p>
+                    <button
+                        onclick="showRouteToHydrant(${loc.lat}, ${loc.lng})"
+                        style="width:100%; padding:10px; background:#1976d2; color:white; border:none; border-radius:6px; font-weight:bold;"
+                    >
+                        🧭 ΔΕΙΞΕ ΔΙΑΔΡΟΜΗ
+                    </button>
+                `);
+        });
+    })
+    .catch(err => console.error('Σφάλμα φόρτωσης medical.json:', err));
+    document.getElementById('categoryFilter')?.addEventListener('change', displayHydrants);
+    
+
