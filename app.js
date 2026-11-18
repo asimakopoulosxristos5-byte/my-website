@@ -6,7 +6,7 @@
 // ==========================================
 // 🔒 ΕΛΕΓΧΟΣ ΠΡΟΣΒΑΣΗΣ ΕΘΕΛΟΝΤΩΝ
 // ==========================================
-const SOMA_PASSWORD = 'XRISTOS'; // <--- ΕΔΩ ΑΛΛΑΖΕΙΣ ΤΟΝ ΚΩΔΙΚΟ ΤΟΥ ΣΩΜΑΤΕΙΟΥ
+const SOMA_PASSWORD = '2001'; // <--- ΕΔΩ ΑΛΛΑΖΕΙΣ ΤΟΝ ΚΩΔΙΚΟ ΤΟΥ ΣΩΜΑΤΕΙΟΥ
 
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('loginModal');
